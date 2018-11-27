@@ -1,4 +1,4 @@
-# functiona.option
+# functional.option
 
 [![NuGet](https://buildstats.info/nuget/FunctionalWay)](https://www.nuget.org/packages/FunctionalWay/)
 
