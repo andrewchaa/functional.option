@@ -1,6 +1,6 @@
 # functional.option
 
-[![NuGet](https://buildstats.info/nuget/FunctionalWay)](https://www.nuget.org/packages/FunctionalWay/)
+[![NuGet](https://buildstats.info/nuget/functional.option)](https://www.nuget.org/packages/functional.option/)
 
 C# implementation of F# option
 
