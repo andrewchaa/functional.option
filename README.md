@@ -1,33 +1,8 @@
-# FunctionalWay
+# functional.option
 
-[![NuGet](https://buildstats.info/nuget/FunctionalWay)](https://www.nuget.org/packages/FunctionalWay/)
+[![NuGet](https://buildstats.info/nuget/functional.option)](https://www.nuget.org/packages/functional.option/)
 
-A collection of helper functions to write C# code in a functional way
-
-## Examples
-
-* [Pipe](#pipe)
-* [Option](#option)
-* [Either](#either)
-
-
-### Pipe
-
-```csharp
-public MoneyTransaction Parse(IList<string> columns)
-{
-    return new MoneyTransaction(
-        columns[0].Pipe(c => DateTime.ParseExact(c, "dd MMM yy", CultureInfo.InvariantCulture)),
-        columns[1].Trim(),
-        columns[1].Trim().Pipe(FindCategory),
-        columns[6]
-            .Pipe(c => c.Trim())
-            .Pipe(c => _logger.LogInformation($"Input: {c}"))
-            .Pipe(c => !string.IsNullOrEmpty(c) ? decimal.Parse(c) : 0),
-        0
-    );
-}
-```
+C# implementation of F# option
 
 ### Option
 
@@ -79,7 +54,7 @@ You can use Map to apply func to the inner value.
 TempOfflineType = TempOffline.Map(v => v.To<TempOfflineType>());
 ```
 
-#### IsSome, IsNone
+### IsSome, IsNone
 
 ```csharp
 duration.Match(
@@ -93,45 +68,5 @@ duration.Match(
 
 if (duration.IsSome || !endDateTime.HasValue)
     return;
-
-```
-
-### Either
-
-```csharp
-Regex _bicRegex = new Regex("[A-Z]{11}");
-
-Either<string, BookTransfer> Handle(BookTransfer transfer)
-    => F.Right(transfer)
-        .Bind(ValidateBic)
-        .Bind(ValidateDate);
-
-Either<string, BookTransfer> ValidateBic(BookTransfer transfer)
-{
-    if (!_bicRegex.IsMatch(transfer.Bic))
-    {
-        return "not in bic format";
-    }
-
-    return transfer;
-}
-
-Either<string, BookTransfer> ValidateDate(BookTransfer transfer)
-{
-    if (transfer.Date <= DateTime.Now)
-    {
-        return "Date is in the past";
-    }
-
-    return transfer;
-}
-
-[Fact]
-public void Should_bind_function_calls_passing_correct_value()
-{
-    var transfer1 = new BookTransfer("ABCDEFGHIJK", DateTime.Now.AddMinutes(1));
-
-    Assert.Equal(F.Right(transfer1).ToString(), Handle(transfer1).ToString());
-}
 
 ```
