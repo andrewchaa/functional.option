@@ -1,7 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>functional.option</PackageId>
+		<Version>0.1.0</Version>
+		<Authors>Andrew Chaa</Authors>
+		<AssemblyName>Functional.Option</AssemblyName>
+		<RootNamespace>Functional.Option</RootNamespace>
+		<PackageProjectUrl>https://github.com/andrewchaa/functional.option</PackageProjectUrl>
+		<PackageIconUrl>https://raw.githubusercontent.com/andrewchaa/FunctionalWay/master/src/Library/icon.jpeg</PackageIconUrl>
+		<PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+		<PackageTags>Functional Option</PackageTags>
+	</PropertyGroup>
 </Project>
