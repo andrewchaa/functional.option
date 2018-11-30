@@ -4,7 +4,7 @@
 
 C# implementation of F# option
 
-Null can be contagious and once a method returns null, the whole graph of related method calls requires null check. 
+Null is contagious and once a method returns null, the whole graph of related method calls requires null check. 
 With Option<T>, you can make it explicit that this method should handle null type check. Coding becomes very pleasant when you do not have to worry of null return type.
 
 ### Option
