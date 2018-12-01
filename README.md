@@ -20,6 +20,35 @@ Some functional languages use Maybe for Option and it's the same concept.
 
 ### examples
 
+Taking Option as parameter
+
+```csharp
+[Fact]
+public void Should_handle_option_T()
+{
+    // arrange
+    Option<string> _ = F.None;
+    Option<string> batman = F.Some("Batman");
+
+    // act
+    var greet1 = greet(_);
+    var greet2 = greet(batman);
+
+    // assert
+    Assert.Equal("Sorry, who?", greet1);
+    Assert.Equal("Hello, Batman", greet2);
+}
+
+string greet(Option<string> greetee)
+    => greetee.Match(
+        None: () => "Sorry, who?",
+        Some: (name) => $"Hello, {name}"
+    );
+
+```
+
+Returning a value from the database wrapped in Option
+
 ```csharp
 public async Task<Option<RestaurantEvents>> GetBy(
     Tenant tenant,
