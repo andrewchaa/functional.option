@@ -18,7 +18,7 @@ Option<T> = None | Some(T)
 
 Some functional languages use Maybe for Option and it's the same concept.
 
-### Option
+### examples
 
 ```csharp
 public async Task<Option<RestaurantEvents>> GetBy(
