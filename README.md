@@ -50,42 +50,41 @@ string greet(Option<string> greetee)
 Returning a value from the database wrapped in Option
 
 ```csharp
-public async Task<Option<RestaurantEvents>> GetBy(
-    Tenant tenant,
-    RestaurantId restaurantId,
-    RestaurantEventId restaurantEventId)
+public async Task<Option<Events>> GetBy(
+    tenant t,
+    Id id,
+    EventId eventId)
 {
-    using (var conn = _appSettings.ToTenantSpecificRestaurantEventsMySqlConnection(tenant))
+    using (var conn = _appSettings.ToSqlConnection(t))
     {
         await conn.OpenAsync();
-        var restaurantEvent = await conn.QuerySingleOrDefaultAsync<RestaurantEvents>(
+        var event = await conn.QuerySingleOrDefaultAsync<Events>(
             @"SELECT *
-                FROM RestaurantEvents
-               WHERE EventId = @restaurantEventId
-                 AND RestaurantId = @restaurantId",
+                FROM Events
+               WHERE EventId = @eventId
+                 AND id = @id",
             new
             {
-                restaurantEventId = restaurantEventId.Id,
-                restaurantId = restaurantId.Id
+                eventId = eventId.Id,
+                id = id.Id
             });
 
-        return restaurantEvent == null
+        return event == null
             ? F.None
-            : F.Some(restaurantEvent);
+            : F.Some(event);
     }
 }
 
-var restaurantEvent = await _repository.GetBy(@event.Tenant.To<Tenant>(), 
-        new RestaurantId(restaurantId), @event.RestaurantEventId);
-await restaurantEvent.Match(
-    None: () =>
+var event = await _repository.GetBy(@event.t.To<t>(), 
+        new Id(id), @event.eventId);
+await event.Match(
+    None: () => 
     {
-        _logger.LogWarning($"Cannot find an existing restaurant {restaurantId} for restaurant event {@event.RestaurantEventId}");
         return F.UnitAsync();
     },
-    Some: e => _repository.Update(@event.Tenant.To<Tenant>(),
+    Some: e => _repository.Update(@event.t.To<t>(),
         e.EventId,
-        e.RestaurantId,
+        e.Id,
         EventStatus.Completed));
 }
 
