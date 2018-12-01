@@ -7,7 +7,18 @@ C# implementation of F# option
 Null is contagious and once a method returns null, the whole graph of related method calls requires null check. 
 With Option<T>, you can make it explicit that this method should handle null type check. Coding becomes very pleasant when you do not have to worry of null return type.
 
-### Option
+The symbolic definition is as follows
+
+```csharp
+Option<T> = None | Some(T)
+```
+
+* None: a special value that indicates the absence of a value. The Option is none, if it has no inner value.
+* Some(T): a container that wraps the value of type T. The Option is Some if if has an inner value.
+
+Some functional languages use Maybe for Option and it's the same concept.
+
+### examples
 
 ```csharp
 public async Task<Option<RestaurantEvents>> GetBy(
