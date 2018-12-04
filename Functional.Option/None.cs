@@ -1,4 +1,7 @@
 ﻿namespace Functional.Option
 {
-    public class None { }
+    public struct None
+    {
+        internal static readonly None Default = new None();
+    }
 }
