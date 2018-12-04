@@ -57,37 +57,22 @@ namespace Functional.Option
             await None();
         }
 
-        public Option<R> Map<R>(Func<T, R> func)
-        {
-            return IsSome ? F.Some(func(_value)) : F.None;
-        }
-
         public bool Equals(Option<T> other)
-        {
-            return IsSome == other.IsSome &&
-                   (IsNone || _value.Equals(other._value));
-        }
-
-        public bool Equals(None none) => IsNone;
-
-        public override bool Equals(object obj)
-        {
-            return Equals((Option<T>)obj);
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return (EqualityComparer<T>.Default.GetHashCode(_value) * 397) ^ IsSome.GetHashCode();
-            }
-        }
-
-
+            => IsSome == other.IsSome && (IsNone || _value.Equals(other._value));
+        public bool Equals(None _) => IsNone;
         public static bool operator ==(Option<T> @this, Option<T> other) => @this.Equals(other);
         public static bool operator !=(Option<T> @this, Option<T> other) => !@this.Equals(other);
 
         public override string ToString() => IsSome ? $"Some({_value})" : "None";
 
+        public Option<R> Map<R>(Func<T, R> func)
+        {
+            return IsSome ? F.Some(func(_value)) : F.None;
+        }
+
+        public IEnumerable<T> AsEnumerable()
+        {
+            if (IsSome) yield return _value;
+        }
     }
 }
