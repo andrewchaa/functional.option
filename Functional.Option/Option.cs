@@ -1,44 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Functional.Option
 {
-    public class Option<T> : IEquatable<Option<T>>
+    public struct Option<T> : IEquatable<None>, IEquatable<Option<T>>
     {
 
         private readonly T _value;
-        private readonly bool _isSome;
-        private bool _isNone => !_isSome;
 
         private Option(T value)
         {
+            if (value == null) 
+                throw new ArgumentNullException();
+
             _value = value;
-            _isSome = true;
+            IsSome = true;
         }
 
-        public bool IsSome => _isSome;
-        public bool IsNone => _isNone;
+        public static implicit operator Option<T>(Some<T> some) => new Option<T>(some.Value);
+        public static implicit operator Option<T>(None _) => new Option<T>();
+        public static implicit operator Option<T>(T value) => value == null ? F.None : F.Some(value);
 
-        public Option()
-        {
-            _isSome = false;
-        }
+        public bool IsSome { get; }
+        public bool IsNone => !IsSome;
 
         public R Match<R>(Func<R> None, Func<T, R> Some)
         {
-            return _isSome ? Some(_value) : None();
+            return IsSome ? Some(_value) : None();
         }
 
         public async Task<R> Match<R>(Func<Task<R>> None, Func<T, Task<R>> Some)
         {
-            return _isSome ? await Some(_value) : await None();
+            return IsSome ? await Some(_value) : await None();
         }
 
         public void Match(Action None, Action<T> Some)
         {
-            if (_isSome)
+            if (IsSome)
             {
                 Some(_value);
                 return;
@@ -49,7 +48,7 @@ namespace Functional.Option
 
         public async Task Match(Func<Task> None, Func<T, Task> Some)
         {
-            if (_isSome)
+            if (IsSome)
             {
                 await Some(_value);
                 return;
@@ -60,19 +59,16 @@ namespace Functional.Option
 
         public Option<R> Map<R>(Func<T, R> func)
         {
-            return _isSome ? F.Some(func(_value)) : F.None;
+            return IsSome ? F.Some(func(_value)) : F.None;
         }
-
-        public static implicit operator Option<T>(Some<T> some) => new Option<T>(some.Value);
-        public static implicit operator Option<T>(None _) => new Option<T>();
 
         public bool Equals(Option<T> other)
         {
-            return _isSome == other._isSome &&
-                   (_isNone || _value.Equals(other._value));
+            return IsSome == other.IsSome &&
+                   (IsNone || _value.Equals(other._value));
         }
 
-        public bool Equals(None none) => _isNone;
+        public bool Equals(None none) => IsNone;
 
         public override bool Equals(object obj)
         {
@@ -83,7 +79,7 @@ namespace Functional.Option
         {
             unchecked
             {
-                return (EqualityComparer<T>.Default.GetHashCode(_value) * 397) ^ _isSome.GetHashCode();
+                return (EqualityComparer<T>.Default.GetHashCode(_value) * 397) ^ IsSome.GetHashCode();
             }
         }
 
@@ -91,7 +87,7 @@ namespace Functional.Option
         public static bool operator ==(Option<T> @this, Option<T> other) => @this.Equals(other);
         public static bool operator !=(Option<T> @this, Option<T> other) => !@this.Equals(other);
 
-        public override string ToString() => _isSome ? $"Some({_value})" : "None";
+        public override string ToString() => IsSome ? $"Some({_value})" : "None";
 
     }
 }
